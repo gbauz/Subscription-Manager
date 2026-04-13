@@ -4,7 +4,23 @@ dist/
 *.db
 .DS_Store
 .env
-.claude/
-.playwright-mcp/
+
+# Archivos internos (no compartir con candidatos)
 docs/EVALUACION-INTERNA.md
 docs/superpowers/
+
+# IA y herramientas
+CLAUDE.md
+.claude/
+.cursorrules
+.cursor/
+.github/copilot-*
+.aider*
+.codeium/
+.continue/
+.tabby/
+.windsurf/
+.bolt/
+copilot-instructions.md
+.playwright-mcp/
+.mcp.json
