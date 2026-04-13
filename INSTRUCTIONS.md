@@ -160,7 +160,7 @@ Nada de esto es obligatorio, pero suma:
 - **Mejor 3 tareas bien hechas que 5 a medias.** Evaluamos calidad, no velocidad.
 - **El dashboard es tu cheatsheet.** Si no sabes como hacer algo, mira como esta resuelto ahi.
 - **No escribas CSS desde cero.** `_variables.scss` y `_mixins.scss` tienen practicamente todo lo que necesitas.
-- **Mira los screenshots.** Estan en `/screenshots/` y te dan una idea clara del resultado esperado.
+- **Mira los screenshots.** Estan en `/screenshots/` y te dan una idea clara del resultado esperado. Los screenshots son guías.
 - **El backend no se toca.** Ya esta listo.
 
 ---
