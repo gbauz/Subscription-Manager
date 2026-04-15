@@ -13,6 +13,7 @@ export class SubscriptionCardComponent {
   subscription = input.required<Subscription>();
   onEdit = output<Subscription>();
   onDelete = output<Subscription>();
+  onToggleStatus = output<Subscription>();
 
   menuOpen = false;
 
@@ -29,4 +30,10 @@ export class SubscriptionCardComponent {
     this.menuOpen = false;
     this.onDelete.emit(this.subscription());
   }
+
+  toggleStatus(): void {
+    this.menuOpen = false;
+    this.onToggleStatus.emit(this.subscription());
+  }
 }
+

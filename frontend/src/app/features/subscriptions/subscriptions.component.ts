@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { SubscriptionService } from '../../core/services/subscription.service';
 import { Subscription, SubscriptionStats, CATEGORIES } from '../../core/models/subscription.model';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-subscriptions',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe, DatePipe],
+  imports: [FormsModule, CurrencyPipe, DatePipe, EmptyStateComponent],
   templateUrl: './subscriptions.component.html',
   styleUrl: './subscriptions.component.scss'
 })
@@ -179,6 +180,17 @@ export class SubscriptionsComponent implements OnInit {
   // 2. Si cancela, no hacemos nada
   // 3. Si acepta, llamamos al servicio delete()
   // 4. Cuando se elimina correctamente, recargamos la data
+  toggleStatus(sub: Subscription): void {
+    const nextStatus: Subscription['status'] = sub.status === 'active' ? 'paused' : 'active';
+
+    this.subscriptionService.update(sub.id, { status: nextStatus }).subscribe({
+      next: () => this.loadData(),
+      error: (err) => {
+        console.error('Error actualizando suscripción:', err);
+      }
+    });
+  }
+
   handleDelete(id: number): void {
     const confirmed = window.confirm('¿Seguro que deseas eliminar esta suscripción?');
 

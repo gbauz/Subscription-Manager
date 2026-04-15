@@ -6,6 +6,7 @@ import { MonthlySummaryComponent } from './components/monthly-summary/monthly-su
 import { UpcomingRenewalsComponent } from './components/upcoming-renewals/upcoming-renewals.component';
 import { SubscriptionCardComponent } from './components/subscription-card/subscription-card.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     UpcomingRenewalsComponent,
     SubscriptionCardComponent,
     ConfirmDialogComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -53,8 +55,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  navigateToAdd(): void {
+    this.router.navigate(['/subscriptions/new']);
+  }
+
   handleEdit(subscription: Subscription): void {
     this.router.navigate(['/subscriptions', subscription.id, 'edit']);
+  }
+
+  handleToggleStatus(subscription: Subscription): void {
+    const nextStatus: Subscription['status'] = subscription.status === 'active' ? 'paused' : 'active';
+
+    this.subscriptionService.update(subscription.id, { status: nextStatus }).subscribe({
+      next: () => this.loadData(),
+      error: (err) => console.error('Error actualizando estado:', err),
+    });
   }
 
   handleDelete(subscription: Subscription): void {

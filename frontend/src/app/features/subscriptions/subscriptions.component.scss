@@ -377,3 +377,19 @@
     max-width: 28ch;
   }
 }
+
+.subscription-status {
+  display: inline-flex;
+  margin-top: 0.4rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: $radius-full;
+  background: $primary-fixed;
+  color: $primary;
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  &--paused {
+    background: $surface-container;
+    color: $on-surface-variant;
+  }
+}

@@ -30,18 +30,19 @@
             [subscription]="sub"
             (onEdit)="handleEdit($event)"
             (onDelete)="handleDelete($event)"
+            (onToggleStatus)="handleToggleStatus($event)"
           />
         } @empty {
-          <div class="empty-state">
-            <span class="material-icons-outlined" style="font-size: 48px; color: #737785;">inbox</span>
-            <p class="body-lg">No hay suscripciones activas</p>
-            <p class="body-md">Agrega tu primera suscripcion para comenzar</p>
-          </div>
+          <app-empty-state
+            icon="inbox"
+            title="No hay suscripciones activas"
+            description="Agrega tu primera suscripción para comenzar."
+          />
         }
       </div>
 
       <div class="add-section">
-        <div class="add-card">
+        <div class="add-card" (click)="navigateToAdd()">
           <span class="material-icons-outlined">add</span>
           <p class="body-md">Agregar Suscripcion</p>
           <p class="label-md" style="text-transform: none;">Gestiona un nuevo servicio digitalmente</p>

@@ -135,6 +135,9 @@
 
                   <!-- Categoría -->
                   <p class="subscription-category">{{ sub.category }}</p>
+                  <span class="subscription-status" [class.subscription-status--paused]="sub.status === 'paused'">
+                    {{ sub.status === 'active' ? 'Activa' : 'Pausada' }}
+                  </span>
                 </div>
               </div>
 
@@ -166,6 +169,15 @@
                 <button
                   type="button"
                   class="action-btn"
+                  (click)="toggleStatus(sub)"
+                  [title]="sub.status === 'active' ? 'Pausar' : 'Reactivar'"
+                >
+                  <span class="material-icons-outlined">{{ sub.status === 'active' ? 'pause_circle' : 'play_circle' }}</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="action-btn"
                   (click)="navigateToEdit(sub.id)"
                   title="Editar"
                 >
@@ -189,13 +201,11 @@
       } @else {
 
         <!-- Estado vacío -->
-        <div class="empty-state">
-          <span class="material-icons-outlined placeholder-icon">search_off</span>
-          <p class="body-lg">No se encontraron suscripciones</p>
-          <p class="body-md">
-            Intenta cambiar la búsqueda o seleccionar otra categoría.
-          </p>
-        </div>
+        <app-empty-state
+          icon="search_off"
+          title="No se encontraron suscripciones"
+          description="Intenta cambiar la búsqueda o seleccionar otra categoría."
+        />
       }
     }
   </section>

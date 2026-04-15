@@ -13,6 +13,10 @@
             <span class="material-icons-outlined">edit</span>
             Editar
           </button>
+          <button class="menu-item" (click)="toggleStatus()">
+            <span class="material-icons-outlined">{{ subscription().status === 'active' ? 'pause_circle' : 'play_circle' }}</span>
+            {{ subscription().status === 'active' ? 'Pausar' : 'Reactivar' }}
+          </button>
           <button class="menu-item menu-item--danger" (click)="delete()">
             <span class="material-icons-outlined">delete</span>
             Eliminar
@@ -30,6 +34,12 @@
   <div class="sub-card__price">
     <span class="title-md">{{ subscription().price | currency:'USD':'symbol':'1.2-2' }}</span>
     <span class="label-md price-suffix">/{{ subscription().billingCycle === 'monthly' ? 'mes' : 'año' }}</span>
+  </div>
+
+  <div class="sub-card__status">
+    <span class="status-pill" [class.status-pill--paused]="subscription().status === 'paused'">
+      {{ subscription().status === 'active' ? 'Activa' : 'Pausada' }}
+    </span>
   </div>
 
   <div class="sub-card__renewal">
