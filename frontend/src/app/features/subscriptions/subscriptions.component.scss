@@ -1,105 +1,140 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 
-.subscriptions-page {
-  max-width: 960px;
-}
+// ============================================================
+// Subscriptions Page
+// ============================================================
 
-// Header
-.page-header {
+.subscriptions-page {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: $spacing-xl;
+  flex-direction: column;
+  gap: $spacing-lg;
+  padding: $spacing-xl $spacing-2xl;
+  max-width: 1100px;
+  margin: 0 auto;
 
   @include mobile {
-    flex-direction: column;
+    padding: $spacing-md;
     gap: $spacing-md;
+  }
+}
+
+// ── Header ──────────────────────────────────────────────────
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $on-surface;
+    letter-spacing: -0.02em;
+    margin: 0 0 $spacing-xs;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: $on-surface-variant;
+    margin: 0;
   }
 }
 
 .btn-add {
   @include btn-primary;
-  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  .material-icons-outlined {
+    font-size: 1.125rem;
+  }
 }
 
-// Busqueda
+// ── Search bar ───────────────────────────────────────────────
+
 .search-bar {
   position: relative;
-  margin-bottom: $spacing-lg;
+  display: flex;
+  align-items: center;
 }
 
 .search-icon {
   position: absolute;
-  left: $spacing-md;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
+  left: 1rem;
   color: $outline;
+  font-size: 1.125rem;
+  pointer-events: none;
 }
 
 .search-input {
   @include input-field;
   padding-left: 2.75rem;
-  border-radius: $radius-lg;
-  background: $surface-container-lowest;
-  box-shadow: $shadow-ambient;
+  border-radius: $radius-full;
   border-bottom: none;
+  background: $surface-container-low;
+  outline: 1px solid $outline-variant;
+  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus {
-    box-shadow: $shadow-focus;
     border-bottom: none;
+    outline-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
   }
 }
 
-// Filtros
+// ── Filter chips ─────────────────────────────────────────────
+
 .filter-chips {
   display: flex;
+  align-items: center;
   gap: $spacing-sm;
-  margin-bottom: $spacing-xl;
-  overflow-x: auto;
-  padding-bottom: $spacing-xs;
-
-  // Ocultar scrollbar pero mantener funcionalidad
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+  flex-wrap: wrap;
 }
 
 .chip {
-  @include btn-secondary;
-  padding: $spacing-sm $spacing-md;
-  font-size: 0.8125rem;
-  background: $surface-container;
-  color: $on-surface-variant;
-  white-space: nowrap;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: $spacing-xs;
+  padding: 0.375rem 1rem;
+  border-radius: $radius-full;
+  border: 1px solid $outline-variant;
+  background: $surface-container-lowest;
+  color: $on-surface-variant;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: $surface-container;
+    border-color: $primary-fixed-dim;
+    color: $on-surface;
+  }
 
   &.active {
-    background: $on-surface;
-    color: $surface;
+    background: $primary-fixed;
+    border-color: $primary-container;
+    color: $primary;
+    font-weight: 600;
   }
 }
 
 .chip-icon {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
-// Resumen
+// ── Summary bar ──────────────────────────────────────────────
+
 .summary-bar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: $spacing-md;
-  margin-bottom: $spacing-2xl;
 
   @include mobile {
-    grid-template-columns: 1fr 1fr;
-
-    .summary-item:last-child {
-      grid-column: 1 / -1;
-    }
+    grid-template-columns: 1fr;
   }
 }
 
@@ -108,24 +143,183 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
+  border-top: 3px solid $primary-container;
+
+  .label-md {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: $outline;
+    text-transform: uppercase;
+  }
 
   .display-sm {
     font-size: 1.75rem;
-
-    @include mobile {
-      font-size: 1.5rem;
-    }
+    font-weight: 700;
+    color: $on-surface;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
 
   .next-date {
     color: $tertiary;
   }
+
+  .body-md {
+    font-size: 0.8125rem;
+    color: $on-surface-variant;
+  }
 }
 
-// Lista — placeholder para el candidato
+// ── Subscription list ────────────────────────────────────────
+
 .subscription-list {
-  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
 }
+
+.subscription-items {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+// ── Subscription card ────────────────────────────────────────
+
+.subscription-card {
+  @include card-with-strip;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: $shadow-elevated;
+    transform: translateY(-1px);
+  }
+
+  @include mobile {
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+}
+
+// Left zone: icon + info
+
+.subscription-main {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  flex: 1;
+  min-width: 0;
+}
+
+.subscription-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: $radius-md;
+  background: $surface-container;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: $on-surface-variant;
+
+  .material-icons-outlined {
+    font-size: 1.25rem;
+  }
+}
+
+.subscription-info {
+  min-width: 0;
+}
+
+.subscription-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $on-surface;
+  margin: 0 0 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subscription-category {
+  font-size: 0.75rem;
+  color: $on-surface-variant;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+// Center/right zone: price + date
+
+.subscription-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+  flex-shrink: 0;
+
+  @include mobile {
+    align-items: flex-start;
+  }
+}
+
+.subscription-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $on-surface;
+  letter-spacing: -0.02em;
+}
+
+.subscription-date {
+  font-size: 0.75rem;
+  color: $on-surface-variant;
+  white-space: nowrap;
+}
+
+// Action zone
+
+.subscription-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: $radius-md;
+  border: none;
+  background: transparent;
+  color: $on-surface-variant;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  .material-icons-outlined {
+    font-size: 1.125rem;
+  }
+
+  &:hover {
+    background: $surface-container;
+    color: $on-surface;
+  }
+
+  &.delete {
+    &:hover {
+      background: $error-container;
+      color: $error;
+    }
+  }
+}
+
+// ── Loading state ────────────────────────────────────────────
 
 .loading-state {
   display: flex;
@@ -134,20 +328,27 @@
   justify-content: center;
   padding: $spacing-3xl;
   gap: $spacing-md;
+  color: $outline;
 
   .loading-spinner {
-    font-size: 32px;
-    color: $primary-container;
-    animation: spin 1.5s linear infinite;
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+  }
+
+  p {
+    font-size: 0.9375rem;
+    color: $on-surface-variant;
+    margin: 0;
   }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-.list-placeholder {
+// ── Empty state ───────────────────────────────────────────────
+
+.empty-state {
   @include card;
   display: flex;
   flex-direction: column;
@@ -156,19 +357,23 @@
   padding: $spacing-3xl;
   gap: $spacing-sm;
   text-align: center;
-  border: 2px dashed $outline-variant;
-  background: transparent;
-  box-shadow: none;
 
   .placeholder-icon {
-    font-size: 48px;
+    font-size: 2.5rem;
     color: $outline;
   }
 
-  code {
-    background: $surface-container;
-    padding: 2px 6px;
-    border-radius: $radius-sm;
-    font-size: 0.8125rem;
+  .body-lg {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $on-surface;
+    margin: 0;
+  }
+
+  .body-md {
+    font-size: 0.875rem;
+    color: $on-surface-variant;
+    margin: 0;
+    max-width: 28ch;
   }
 }

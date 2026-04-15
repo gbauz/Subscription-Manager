@@ -1,20 +1,30 @@
 <div class="subscriptions-page">
 
-  <!-- Header -->
+  <!-- Header principal de la pantalla -->
   <header class="page-header">
     <div>
       <h1 class="headline-md">Mis Suscripciones</h1>
       <p class="body-md">Gestiona tus servicios digitales</p>
     </div>
+
+    <!-- Botón para navegar a crear nueva suscripción -->
     <button class="btn-add" (click)="navigateToAdd()">
       <span class="material-icons-outlined">add</span>
       Nueva Suscripcion
     </button>
   </header>
 
-  <!-- Barra de busqueda -->
+  <!-- Barra de búsqueda -->
   <div class="search-bar">
     <span class="material-icons-outlined search-icon">search</span>
+
+    <!--
+      [ngModel]="searchQuery()"
+      -> muestra en el input el valor actual de la signal
+
+      (ngModelChange)="onSearch($event)"
+      -> cada vez que el usuario escribe, actualizamos searchQuery
+    -->
     <input
       type="text"
       placeholder="Buscar suscripcion..."
@@ -24,8 +34,10 @@
     />
   </div>
 
-  <!-- Filtros por categoria -->
+  <!-- Filtros por categoría -->
   <div class="filter-chips">
+
+    <!-- Chip fijo para mostrar todas las categorías -->
     <button
       class="chip"
       [class.active]="activeFilter() === 'all'"
@@ -33,6 +45,11 @@
     >
       Todas
     </button>
+
+    <!--
+      Recorremos las categorías disponibles.
+      Cada categoría crea un botón de filtro.
+    -->
     @for (cat of categories; track cat.value) {
       <button
         class="chip"
@@ -45,18 +62,23 @@
     }
   </div>
 
-  <!-- Resumen -->
+  <!-- Barra resumen -->
   <div class="summary-bar">
     <div class="summary-item">
       <span class="label-md">GASTO MENSUAL</span>
-      <span class="display-sm">{{ stats().totalMonthly | currency:'USD':'symbol':'1.2-2' }}</span>
+      <span class="display-sm">
+        {{ stats().totalMonthly | currency:'USD':'symbol':'1.2-2' }}
+      </span>
     </div>
+
     <div class="summary-item">
       <span class="label-md">ACTIVAS</span>
       <span class="display-sm">{{ stats().count }}</span>
     </div>
+
     <div class="summary-item">
       <span class="label-md">PROXIMO COBRO</span>
+
       @if (nextRenewal(); as next) {
         <span class="display-sm next-date">{{ next.nextPaymentDate | date:'MMM d' }}</span>
         <span class="body-md">{{ next.name }}</span>
@@ -66,21 +88,115 @@
     </div>
   </div>
 
+  <!-- Sección de la lista -->
   <section class="subscription-list">
+
+    <!-- Estado de carga -->
     @if (isLoading()) {
       <div class="loading-state">
         <span class="material-icons-outlined loading-spinner">sync</span>
         <p class="body-md">Cargando...</p>
       </div>
     } @else {
-      <div class="list-placeholder">
-        <span class="material-icons-outlined placeholder-icon">format_list_bulleted</span>
-        <p class="body-lg">La lista de suscripciones va aqui</p>
-        <p class="body-md">
-          Implementa la lista usando <code>filteredSubscriptions()</code> como fuente de datos.
-          Consulta los screenshots en <code>/screenshots/</code> para referencia.
-        </p>
-      </div>
+
+      <!--
+        Si ya terminó de cargar, validamos si hay resultados.
+        Aquí usamos filteredSubscriptions() porque esa es la lista ya filtrada.
+      -->
+      @if (filteredSubscriptions().length > 0) {
+
+        <!-- Lista de suscripciones -->
+        <div class="subscription-items">
+
+          <!--
+            Recorremos la lista filtrada.
+            track sub.id ayuda a Angular a renderizar mejor los cambios.
+          -->
+          @for (sub of filteredSubscriptions(); track sub.id) {
+
+            <article class="subscription-card">
+
+              <!-- Zona izquierda: icono + información -->
+              <div class="subscription-main">
+
+                <!--
+                  Aquí mostramos el icono de la categoría.
+                  Se asume que el modelo tiene una propiedad icon.
+                  Si no la tiene, puedes poner un icono fijo o mapearlo por categoría.
+                -->
+                <div class="subscription-icon">
+                  <span class="material-icons-outlined">{{ sub.icon }}</span>
+                </div>
+
+                <div class="subscription-info">
+
+                  <!-- Nombre de la suscripción -->
+                  <h3 class="subscription-name">{{ sub.name }}</h3>
+
+                  <!-- Categoría -->
+                  <p class="subscription-category">{{ sub.category }}</p>
+                </div>
+              </div>
+
+              <!-- Zona central/derecha: precio y fecha -->
+              <div class="subscription-meta">
+                <span class="subscription-price">
+                  {{ sub.price | currency:'USD':'symbol':'1.2-2' }}
+                </span>
+
+                <span class="subscription-date">
+                  Renueva: {{ sub.nextPaymentDate | date:'MMM d, y' }}
+                </span>
+              </div>
+
+              <!-- Zona de acciones -->
+              <div class="subscription-actions">
+
+                <!-- Ver detalle -->
+                <button
+                  type="button"
+                  class="action-btn"
+                  (click)="navigateToDetail(sub.id)"
+                  title="Ver detalle"
+                >
+                  <span class="material-icons-outlined">visibility</span>
+                </button>
+
+                <!-- Editar -->
+                <button
+                  type="button"
+                  class="action-btn"
+                  (click)="navigateToEdit(sub.id)"
+                  title="Editar"
+                >
+                  <span class="material-icons-outlined">edit</span>
+                </button>
+
+                <!-- Eliminar -->
+                <button
+                  type="button"
+                  class="action-btn delete"
+                  (click)="handleDelete(sub.id)"
+                  title="Eliminar"
+                >
+                  <span class="material-icons-outlined">delete</span>
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+
+      } @else {
+
+        <!-- Estado vacío -->
+        <div class="empty-state">
+          <span class="material-icons-outlined placeholder-icon">search_off</span>
+          <p class="body-lg">No se encontraron suscripciones</p>
+          <p class="body-md">
+            Intenta cambiar la búsqueda o seleccionar otra categoría.
+          </p>
+        </div>
+      }
     }
   </section>
 

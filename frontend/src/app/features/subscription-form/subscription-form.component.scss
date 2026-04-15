@@ -1,0 +1,499 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// ============================================================
+// Subscription Form Page
+// ============================================================
+
+.form-page {
+  display: flex;
+  gap: $spacing-xl;
+  padding: $spacing-xl $spacing-2xl;
+  max-width: 1100px;
+  margin: 0 auto;
+  min-height: calc(100vh - 64px);
+  align-items: flex-start;
+
+  @include mobile {
+    flex-direction: column;
+    padding: $spacing-md;
+    gap: $spacing-md;
+  }
+}
+
+.form-panel {
+  flex: 1;
+  max-width: 560px;
+  min-width: 0;
+
+  @include mobile {
+    max-width: 100%;
+  }
+}
+
+.side-panel {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  position: sticky;
+  top: $spacing-xl;
+
+  @include mobile {
+    width: 100%;
+    position: static;
+  }
+}
+
+// ── Header ──────────────────────────────────────────────────
+
+.form-header {
+  margin-bottom: $spacing-xl;
+}
+
+.display-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: $on-surface;
+  margin: 0 0 $spacing-sm;
+  letter-spacing: -0.02em;
+
+  em {
+    font-style: normal;
+    color: $primary-container;
+  }
+
+  @include mobile {
+    font-size: 1.75rem;
+  }
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: $on-surface-variant;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 400px;
+}
+
+// ── Form body ───────────────────────────────────────────────
+
+.form-body {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+// ── Field groups ────────────────────────────────────────────
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $outline;
+}
+
+// ── Inputs ──────────────────────────────────────────────────
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: $surface-container-high;
+  border-radius: $radius-md $radius-md 0 0;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease;
+
+  &:focus-within {
+    border-bottom-color: $primary;
+  }
+
+  &.error {
+    border-bottom-color: $error;
+  }
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.875rem;
+  color: $outline;
+  font-size: 1.125rem;
+  pointer-events: none;
+}
+
+.currency-prefix {
+  padding-left: 1rem;
+  font-size: 0.875rem;
+  color: $outline;
+  flex-shrink: 0;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 0.875rem;
+  font-size: 1.125rem;
+  color: $outline;
+  pointer-events: none;
+}
+
+.text-input {
+  @include input-field;
+  flex: 1;
+}
+
+.input-wrapper .input-icon + .text-input {
+  padding-left: 2.75rem;
+}
+
+.number-input {
+  padding-left: 0.5rem;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    opacity: 1;
+  }
+}
+
+.select-input {
+  appearance: none;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.date-input {
+  cursor: pointer;
+}
+
+// ── Billing toggle ──────────────────────────────────────────
+
+.billing-toggle {
+  display: flex;
+  background: $surface-container-high;
+  border-radius: $radius-md;
+  padding: 4px;
+  gap: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: none;
+  border-radius: calc($radius-md - 2px);
+  background: transparent;
+  color: $outline;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+
+  &.active {
+    background: $surface-container-lowest;
+    color: $primary;
+    font-weight: 600;
+    box-shadow: $shadow-focus;
+  }
+}
+
+// ── Color picker ────────────────────────────────────────────
+
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.color-picker-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 2px solid $outline-variant;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: $primary;
+  }
+}
+
+.color-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.color-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: $radius-full;
+}
+
+.color-hex {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.color-hint {
+  font-size: 0.75rem;
+  color: $outline;
+  flex: 1;
+  min-width: 120px;
+}
+
+// ── Errors ──────────────────────────────────────────────────
+
+.error-msg {
+  font-size: 0.75rem;
+  color: $error;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  animation: slideDown 0.15s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Actions ─────────────────────────────────────────────────
+
+.form-actions {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
+
+  @include mobile {
+    flex-direction: column-reverse;
+  }
+}
+
+.btn-primary {
+  @include btn-primary;
+  flex: 1;
+}
+
+.btn-secondary {
+  @include btn-secondary;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.submit-error {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.8125rem;
+  color: $error;
+  background: $error-container;
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+  margin: 0;
+}
+
+// ── Preview card ────────────────────────────────────────────
+
+.preview-card {
+  @include card;
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid var(--brand, #0056d2);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.preview-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+    color: #fff;
+  }
+}
+
+.preview-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: $on-surface;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-cycle {
+  font-size: 0.75rem;
+  color: $outline;
+  margin: 0;
+}
+
+.preview-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.preview-amount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: $on-surface;
+}
+
+.preview-period {
+  font-size: 0.8125rem;
+  color: $outline;
+}
+
+.preview-strip {
+  height: 3px;
+  border-radius: $radius-full;
+  margin-top: $spacing-xs;
+  opacity: 0.5;
+}
+
+// ── Hint card ───────────────────────────────────────────────
+
+.hint-card {
+  background: $primary-container;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  gap: $spacing-md;
+  align-items: flex-start;
+}
+
+.hint-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 1.125rem;
+    color: #fff;
+  }
+}
+
+.hint-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 $spacing-xs;
+}
+
+.hint-body {
+  font-size: 0.8125rem;
+  color: $on-primary-container;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// ── Upcoming card ───────────────────────────────────────────
+
+.upcoming-card {
+  @include card;
+  border-left: 4px solid $tertiary-container;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.upcoming-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: $tertiary-container;
+}
+
+.upcoming-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.upcoming-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: $on-surface;
+}
+
+.upcoming-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $tertiary-container;
+  background: $tertiary-fixed;
+  border-radius: $radius-full;
+  padding: 0.125rem 0.625rem;
+}
+
+// ── Icons ───────────────────────────────────────────────────
+
+.material-symbols-outlined {
+  vertical-align: middle;
+  font-size: 1.125rem;
+}

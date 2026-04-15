@@ -50,3 +50,11 @@
     }
   </section>
 </div>
+<!-- Agregar al final de dashboard.component.html -->
+<app-confirm-dialog
+  [visible]="showConfirm"
+  [loading]="deleting"
+  [message]="'Se eliminará ' + (pendingDelete?.name ?? 'este elemento') + ' de forma permanente.'"
+  (confirmed)="onDeleteConfirmed()"
+  (cancelled)="onDeleteCancelled()"
+/>

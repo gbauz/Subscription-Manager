@@ -5,6 +5,7 @@ import { Subscription, SubscriptionStats } from '../../core/models/subscription.
 import { MonthlySummaryComponent } from './components/monthly-summary/monthly-summary.component';
 import { UpcomingRenewalsComponent } from './components/upcoming-renewals/upcoming-renewals.component';
 import { SubscriptionCardComponent } from './components/subscription-card/subscription-card.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ import { SubscriptionCardComponent } from './components/subscription-card/subscr
     MonthlySummaryComponent,
     UpcomingRenewalsComponent,
     SubscriptionCardComponent,
+    ConfirmDialogComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -21,12 +23,15 @@ export class DashboardComponent implements OnInit {
   private subscriptionService = inject(SubscriptionService);
   private router = inject(Router);
 
-  // === Signals para estado reactivo ===
   subscriptions = signal<Subscription[]>([]);
   stats = signal<SubscriptionStats>({ totalMonthly: 0, count: 0, annualProjection: 0 });
   isLoading = signal(true);
 
-  // === Computed signals ===
+  // Estado del diálogo
+  showConfirm = false;
+  deleting = false;
+  pendingDelete: Subscription | null = null;
+
   activeSubscriptions = computed(() =>
     this.subscriptions().filter(s => s.status === 'active')
   );
@@ -53,6 +58,32 @@ export class DashboardComponent implements OnInit {
   }
 
   handleDelete(subscription: Subscription): void {
-    console.log('Eliminar:', subscription.name);
+    this.pendingDelete = subscription;
+    this.showConfirm = true;
+  }
+
+  onDeleteConfirmed(): void {
+    if (!this.pendingDelete) return;
+    this.deleting = true;
+    this.subscriptionService.delete(this.pendingDelete.id).subscribe({
+      next: () => {
+        this.loadData();
+        this.closeDialog();
+      },
+      error: (err) => {
+        console.error('Error eliminando suscripción:', err);
+        this.deleting = false;
+      },
+    });
+  }
+
+  onDeleteCancelled(): void {
+    this.closeDialog();
+  }
+
+  private closeDialog(): void {
+    this.showConfirm = false;
+    this.deleting = false;
+    this.pendingDelete = null;
   }
 }

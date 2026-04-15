@@ -1,0 +1,237 @@
+<div class="form-page">
+  <div class="form-panel">
+    <div class="form-header">
+      <h1 class="display-title">
+        {{ isEditMode ? 'Edit your' : 'Curate your' }}<br />
+        <em>{{ isEditMode ? 'subscription.' : 'ledger.' }}</em>
+      </h1>
+
+      <p class="subtitle">
+        {{
+          isEditMode
+            ? 'Adjust the parameters of this subscription entry.'
+            : 'Define the parameters of your digital lifestyle investment. Every subscription is a chapter in your narrative.'
+        }}
+      </p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="form-body">
+      <div class="field-group">
+        <label class="field-label" for="name">Search Service</label>
+
+        <div class="input-wrapper" [class.error]="isInvalid('name')">
+          <span class="input-icon material-icons-outlined">search</span>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Netflix, Disney+, Adobe"
+            class="text-input"
+            autocomplete="off"
+          />
+        </div>
+
+        <span class="error-msg" *ngIf="isInvalid('name')">
+          <ng-container *ngIf="form.get('name')?.errors?.['required']">
+            Service name is required.
+          </ng-container>
+          <ng-container *ngIf="form.get('name')?.errors?.['minlength']">
+            Minimum 2 characters.
+          </ng-container>
+        </span>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label" for="price">Subscription Cost</label>
+
+          <div class="input-wrapper" [class.error]="isInvalid('price')">
+            <span class="currency-prefix">$</span>
+            <input
+              id="price"
+              type="number"
+              formControlName="price"
+              placeholder="0.00"
+              class="text-input number-input"
+              step="0.01"
+              min="0.01"
+            />
+          </div>
+
+          <span class="error-msg" *ngIf="isInvalid('price')">
+            <ng-container *ngIf="form.get('price')?.errors?.['required']">
+              Price is required.
+            </ng-container>
+            <ng-container *ngIf="form.get('price')?.errors?.['min']">
+              Must be greater than 0.
+            </ng-container>
+          </span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Billing Cycle</label>
+
+          <div class="billing-toggle">
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="form.get('billingCycle')?.value === 'monthly'"
+              (click)="setBillingCycle('monthly')"
+            >
+              Monthly
+            </button>
+
+            <button
+              type="button"
+              class="toggle-btn"
+              [class.active]="form.get('billingCycle')?.value === 'annual'"
+              (click)="setBillingCycle('annual')"
+            >
+              Annual
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="category">Category</label>
+
+        <div class="input-wrapper" [class.error]="isInvalid('category')">
+          <span class="input-icon material-icons-outlined">category</span>
+
+          <select id="category" formControlName="category" class="text-input select-input">
+            <option value="" disabled>Select a category</option>
+            <option *ngFor="let cat of categories" [value]="cat.value">
+              {{ cat.label }}
+            </option>
+          </select>
+
+          <span class="select-arrow material-icons-outlined">expand_more</span>
+        </div>
+
+        <span class="error-msg" *ngIf="isInvalid('category')">
+          Category is required.
+        </span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="nextPaymentDate">Next Renewal Date</label>
+
+        <div class="input-wrapper" [class.error]="isInvalid('nextPaymentDate')">
+          <span class="input-icon material-icons-outlined">calendar_today</span>
+          <input
+            id="nextPaymentDate"
+            type="date"
+            formControlName="nextPaymentDate"
+            class="text-input date-input"
+          />
+        </div>
+
+        <span class="error-msg" *ngIf="isInvalid('nextPaymentDate')">
+          Next payment date is required.
+        </span>
+      </div>
+
+      <div class="field-group color-field-group">
+        <label class="field-label" for="color">Brand Color</label>
+
+        <div class="color-row">
+          <div class="color-picker-wrapper">
+            <input
+              id="color"
+              type="color"
+              formControlName="color"
+              class="color-input"
+            />
+          </div>
+
+          <div class="color-preview" [style.background]="form.get('color')?.value">
+            <span class="color-hex">{{ form.get('color')?.value | uppercase }}</span>
+          </div>
+
+          <span class="color-hint">
+            Optional — used as accent in your dashboard
+          </span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="goBack()">
+          <span class="material-icons-outlined">arrow_back</span>
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="form.invalid || isSubmitting"
+        >
+          <span class="material-icons-outlined" *ngIf="!isSubmitting">
+            {{ isEditMode ? 'save' : 'check' }}
+          </span>
+
+          <span class="spinner" *ngIf="isSubmitting"></span>
+
+          {{ isSubmitting ? 'Saving…' : (isEditMode ? 'Save Changes' : 'Finalize Entry') }}
+        </button>
+      </div>
+
+      <p class="submit-error" *ngIf="submitError">
+        <span class="material-icons-outlined">error</span>
+        {{ submitError }}
+      </p>
+    </form>
+  </div>
+
+  <aside class="side-panel">
+    <div class="preview-card" [style.--brand]="form.get('color')?.value">
+      <div class="preview-header">
+        <div class="preview-icon" [style.background]="form.get('color')?.value">
+          <span class="material-icons-outlined">{{ getCategoryIcon() }}</span>
+        </div>
+
+        <div>
+          <p class="preview-name">{{ form.get('name')?.value || 'Service Name' }}</p>
+          <p class="preview-cycle">
+            {{ form.get('billingCycle')?.value === 'annual' ? 'Annual' : 'Monthly' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="preview-price">
+        <span class="preview-amount">
+          ${{ (form.get('price')?.value || 0) | number:'1.2-2' }}
+        </span>
+        <span class="preview-period">
+          / {{ form.get('billingCycle')?.value === 'annual' ? 'yr' : 'mo' }}
+        </span>
+      </div>
+
+      <div class="preview-strip" [style.background]="form.get('color')?.value"></div>
+    </div>
+
+    <div class="hint-card">
+      <div class="hint-icon">
+        <span class="material-icons-outlined">auto_awesome</span>
+      </div>
+
+      <div>
+        <h3 class="hint-title">Smart Categorization</h3>
+        <p class="hint-body">
+          The Curator automatically tracks price increases and renewal windows so you never miss a beat.
+        </p>
+      </div>
+    </div>
+
+    <div class="upcoming-card" *ngIf="form.get('nextPaymentDate')?.value">
+      <span class="upcoming-label">UPCOMING RENEWAL</span>
+
+      <div class="upcoming-row">
+        <span class="upcoming-name">
+          {{ form.get('name')?.value || 'Your subscription' }}
+        </span>
+        <span class="upcoming-badge">{{ getDaysUntil() }}</span>
+      </div>
+    </div>
+  </aside>
+</div>
